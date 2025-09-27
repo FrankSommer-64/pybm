@@ -1,0 +1,49 @@
+[project]
+name = "pybm"
+dynamic = ["version"]
+authors = [
+    {name="Frank Sommer", email="Frank.Sommer@sherpa-software.de"}
+]
+maintainers = [
+    {name="Frank Sommer", email="Frank.Sommer@sherpa-software.de"}
+]
+description = "Simple build manager for Python projects"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "hatchling",
+    "tomli"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Build Tools",
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent"
+]
+
+[project.scripts]
+pybm = "pybm:cli.cli_main"
+
+[project.urls]
+Homepage = "https://github.com/frsommer64/pybm"
+Issues = "https://github.com/frsommer64/pybmissues"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.sdist]
+exclude = [
+    "/.git",
+    "/.pytest_cache",
+    "/.idea",
+    "/.venv"
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/pybm"]
+
+[tool.hatch.version]
+path = "src/pybm/__init__.py"

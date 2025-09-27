@@ -1,0 +1,50 @@
+#!/bin/bash
+
+# -------------------------------------------------------------------------------------------------
+# Funktionen zum Erstellen von Installationspaketen für ein Python-Projekt.
+# Benötigt ein Python virtual environment mit den Packages hatchling, pybm und tomli.
+# Benötigt folgende Umgebungsvariablen:
+#   PYBM_PROJECTS_ROOT Root-Verzeichnis für Projekte
+#   PYBM_TESTING_ROOT Root-Verzeichnis für Tests
+#   PYBM_VENV_PATH Verzeichnis, in dem das Python virtual environment mit pybm liegt
+#
+# Aufruf: build_py <Paket-Typ> <Projekt> [<Feature-Umfang>]
+#   Paket-Typen: wheel | deb | rpm | nsis
+#
+# -------------------------------------------------------------------------------------------------
+
+# Parameter prüfen
+if [ "$1" == "" ]; then
+  echo "Kein Paket-Typ angegeben"
+  exit 1
+fi
+pkg_type=$1
+shift
+if [ "$1" == "" ]; then
+  echo "Kein Projekt angegeben"
+  exit 1
+fi
+project=$1
+shift
+
+# Verzeichnis mit dem Python virtual environment prüfen
+if [ "$PYBM_VENV_PATH" == "" ]; then
+  echo "Umgebungsvariable PYBM_VENV_PATH nicht gesetzt"
+  exit 1
+fi
+if [ ! -d $PYBM_VENV_PATH ]; then
+  echo "Python virtual environment $PYBM_VENV_PATH nicht gefunden"
+  exit 1
+fi
+act_script=$PYBM_VENV_PATH/bin/activate
+if [ ! -f $act_script ]; then
+  echo "Aktivierungsskript für Python virtual environment $act_script nicht gefunden"
+  exit 1
+fi
+
+# Python virtual environment aktivieren
+source $act_script
+
+# Build ausführen
+pybm build_$pkg_type $project "$@"
+deactivate
