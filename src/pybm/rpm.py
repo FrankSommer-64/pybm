@@ -43,7 +43,7 @@ import subprocess
 import tempfile
 
 from pybm import *
-from pybm.util import copy_customizable_file, shell_cmd, wheel_file_name
+from pybm.util import copy_customizable_file, copy_customizable_file_tree, shell_cmd, wheel_file_name
 from pybm.wheel import build_wheel
 
 
@@ -101,7 +101,7 @@ def build_rpm(build_environment: dict, project: str, feature_set: str = None):
         os.makedirs(_target_wheel_path, mode=0o755, exist_ok=True)
         shutil.move(os.path.join(_dist_path, _wheel_file_name), _target_wheel_path)
         # projektspezifische Daten kopieren
-        shutil.copytree(_source_data_path, _archive_project_root, dirs_exist_ok=True)
+        copy_customizable_file_tree(_source_data_path, _temp_path, _var_replacements)
         os.chdir(_temp_path)
         _cmd = ['tar', '-czf', _archive_file_name, _project_dir]
         _rc = shell_cmd(_cmd)

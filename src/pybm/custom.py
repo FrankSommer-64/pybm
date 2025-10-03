@@ -33,7 +33,7 @@
 # -----------------------------------------------------------------------------------------------
 
 """
-Erzeugt ZIP-Archive für eine manuelle Installation.
+Erzeugt ein ZIP-Archiv für eine manuelle Installation.
 """
 
 import os
@@ -46,41 +46,40 @@ from pybm.util import wheel_file_name
 from pybm.wheel import build_wheel
 
 
-def build_zip(build_environment: dict, project: str, feature_set: str = None):
+def build_custom(build_environment: dict, project: str, feature_set: str = None):
     """
-    Erzeugt ein ZIP-Archiv für angegebenes Projekt und ggf. Feature-Set.
+    Erzeugt ein ZIP-Archiv für das angegebene Projekt.
     :param build_environment: Build-Environment
     :param project: Name des Projekts
-    :param feature_set: optional Name des Feature-Sets
+    :param feature_set: Name des Feature-Sets, wird ignoriert
     """
     _project_root = build_environment[PAR_PROJECT_ROOT]
     _dist_path = os.path.join(_project_root, 'dist')
-    _wheel_file_name = wheel_file_name(build_environment, feature_set)
-    if feature_set is None:
-        print(f'Erzeuge ZIP-Archiv für Projekt {project}')
-        _feature_path = os.path.join(_project_root, 'build')
-        _project_version = build_environment[PAR_FEATURE_SETS][''][PAR_PROJECT_VERSION]
-        _package_name = build_environment[PAR_FEATURE_SETS][''][PAR_PACKAGE_NAME]
-    else:
-        print(f'Erzeuge ZIP-Archiv für Projekt {project}, Feature-Set {feature_set}')
-        _feature_path = os.path.join(_project_root, 'build', 'featuresets', feature_set)
-        _project_version = build_environment[PAR_FEATURE_SETS][feature_set][PAR_PROJECT_VERSION]
-        _package_name = build_environment[PAR_FEATURE_SETS][feature_set][PAR_PACKAGE_NAME]
-    _archive_file_name = f'{_package_name}-{_project_version}.zip'
+    _project_version = next(iter(build_environment[PAR_FEATURE_SETS].values()))[PAR_PROJECT_VERSION]
+    _archive_file_name = f'{project}-{_project_version}-custom.zip'
     with tempfile.TemporaryDirectory() as _temp_path:
-        # Wheel erzeugen
-        build_wheel(build_environment, project, feature_set)
-        shutil.copy2(str(os.path.join(_dist_path, _wheel_file_name)), _temp_path)
-        # Installations-Skript
-        _is_path = os.path.join(_feature_path, 'zip')
-        for _f in os.listdir(_is_path):
-            shutil.copy2(str(os.path.join(_is_path, _f)), _temp_path)
-        # weitere Dateien
-        _aux_root_path = os.path.join(_feature_path, 'deb', 'data')
-        for _path, _dirs, _files in os.walk(_aux_root_path):
-            for _file in _files:
-                _file_path = os.path.join(_path, _file)
-                shutil.copy2(str(_file_path), _temp_path)
+        _target_path = os.path.join(_temp_path, f'{project}-{_project_version}')
+        os.mkdir(_target_path)
+        for _fs_name, _fs_data in build_environment[PAR_FEATURE_SETS].items():
+            if len(_fs_name) == 0:
+                _feature_path = os.path.join(_project_root, 'build')
+            else:
+                _feature_path = os.path.join(_project_root, 'build', 'featuresets', str(_fs_name))
+            # Wheel erzeugen
+            _wheel_file_name = wheel_file_name(build_environment, _fs_name)
+            build_wheel(build_environment, project, _fs_name)
+            shutil.move(os.path.join(_dist_path, _wheel_file_name), _target_path)
+            # Zusatzdaten kopieren
+            _custom_data_path = os.path.join(_feature_path, 'custom')
+            for _path, _dirs, _files in os.walk(_custom_data_path):
+                for _file in _files:
+                    _file_path = os.path.join(_path, _file)
+                    shutil.copy2(str(_file_path), _target_path)
+            _aux_root_path = os.path.join(_feature_path, 'deb', 'data')
+            for _path, _dirs, _files in os.walk(_aux_root_path):
+                for _file in _files:
+                    _file_path = os.path.join(_path, _file)
+                    shutil.copy2(str(_file_path), _target_path)
         # ZIP-Archiv erzeugen
         _archive_file_path = os.path.join(_dist_path, _archive_file_name)
         with zipfile.ZipFile(_archive_file_path, 'w') as _zf:

@@ -45,7 +45,7 @@ from pybm.rpm import build_rpm
 from pybm.sign import build_sign
 from pybm.util import build_env_for
 from pybm.wheel import build_wheel
-from pybm.zip import build_zip
+from pybm.custom import build_custom
 
 
 def show_usage():
@@ -58,7 +58,7 @@ def show_usage():
     print('    build_deb erzeugt ein Debian Installationspaket')
     print('    build_rpm erzeugt ein rpm Installationspaket')
     print('    build_nsis erzeugt einen NSIS Windows-Installer')
-    print('    build_zip erzeugt ein ZIP-Archiv für die manuelle Installation')
+    print('    build_custom erzeugt ein ZIP-Archiv für die manuelle Installation')
     print('    build_sign generiert eine signierte Datei mit den SHA512-Hashes')
     print()
 
@@ -96,9 +96,12 @@ def cli_main():
     project = sys.argv[2]
     try:
         build_env = build_env_for(project)
-        if build_type == BUILD_TYPE_NSIS:
+
+        if build_type in (BUILD_TYPE_NSIS, BUILD_TYPE_SIGN, BUILD_TYPE_CUSTOM):
+            feature_set_ignored = True
             feature_set = FEATURE_SET_ALL
         else:
+            feature_set_ignored = False
             feature_set = None if len(sys.argv) == 3 else sys.argv[3].lower()
         check_feature_set(build_env, feature_set)
         if build_type == BUILD_TYPE_WHEEL:
@@ -107,8 +110,8 @@ def cli_main():
             build_func = build_deb
         elif build_type == BUILD_TYPE_RPM:
             build_func = build_rpm
-        elif build_type == BUILD_TYPE_ZIP:
-            build_func = build_zip
+        elif build_type == BUILD_TYPE_CUSTOM:
+            build_func = build_custom
         elif build_type == BUILD_TYPE_NSIS:
             build_func = build_nsis
         elif build_type == BUILD_TYPE_SIGN:
@@ -118,7 +121,7 @@ def cli_main():
         if len(build_env[PAR_FEATURE_SETS]) == 0:
             build_func(build_env, project)
         else:
-            if build_type == BUILD_TYPE_NSIS or build_type == BUILD_TYPE_SIGN or feature_set != FEATURE_SET_ALL:
+            if feature_set_ignored or feature_set != FEATURE_SET_ALL:
                 build_func(build_env, project, feature_set)
             else:
                 for _f in build_env[PAR_FEATURE_SETS]:

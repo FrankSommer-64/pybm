@@ -54,6 +54,7 @@ needed, the others only for the corresponding target platform.
       |- nsis (files to build NSIS Windows installer: .nsi)
       |- rpm (files to build an RPM package: SOURCES, SPECS)
       |- wheel (pyproject.toml)
+      |- custom (data for manual installation)
     dist (receives packages built by pybm)
     src (Python sources)
       |- <project> (same as project root directory name)
@@ -84,9 +85,9 @@ Command line interface:
 - Create Python wheel: ```build_py wheel <project> [<feature-set>]```
 - Create Debian install package: ```build_py deb <project> [<feature-set>]```
 - Create RPM install package: ```build_py rpm <project> [<feature-set>]```
-- Create NSIS Windows installer: ```build_py nsis <project> [<feature-set>]```
-- Create ZIP archive: ```build_py zip <project> [<feature-set>]```
-- Create hashes and signature: ```build_py sign <project> all```
+- Create NSIS Windows installer: ```build_py nsis <project>```
+- Create custom ZIP archive: ```build_py custom <project>```
+- Create hashes and signature: ```build_py sign <project>```
 - Change owner of Debian package to root: ```sudo chroot_deb <deb-file>```
 
 See [open issues](https://github.com/FrankSommer-64/pybm/issues) for a full list of proposed features (and known issues).

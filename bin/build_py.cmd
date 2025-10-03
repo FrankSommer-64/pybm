@@ -6,11 +6,10 @@ rem Funktionen zum Erstellen von Installationspaketen für ein Python-Projekt.
 rem Benötigt ein Python virtual environment mit den Packages hatchling, pybm und tomli.
 rem Benötigt folgende Umgebungsvariablen:
 rem   PYBM_PROJECTS_ROOT Root-Verzeichnis für Projekte
-rem   PYBM_TESTING_ROOT Root-Verzeichnis für Tests
 rem   PYBM_VENV_PATH Verzeichnis, in dem das Python virtual environment mit pybm liegt
 rem
 rem Aufruf: build_py <Paket-Typ> <Projekt> [<Feature-Umfang>]
-rem   Paket-Typen: wheel | deb | rpm | nsis
+rem   Paket-Typen: wheel | deb | rpm | nsis | custom
 rem
 rem -------------------------------------------------------------------------------------------------
 

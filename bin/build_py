@@ -5,11 +5,10 @@
 # Benötigt ein Python virtual environment mit den Packages hatchling, pybm und tomli.
 # Benötigt folgende Umgebungsvariablen:
 #   PYBM_PROJECTS_ROOT Root-Verzeichnis für Projekte
-#   PYBM_TESTING_ROOT Root-Verzeichnis für Tests
 #   PYBM_VENV_PATH Verzeichnis, in dem das Python virtual environment mit pybm liegt
 #
 # Aufruf: build_py <Paket-Typ> <Projekt> [<Feature-Umfang>]
-#   Paket-Typen: wheel | deb | rpm | nsis
+#   Paket-Typen: wheel | deb | rpm | nsis | custom
 #
 # -------------------------------------------------------------------------------------------------
 

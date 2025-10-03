@@ -33,7 +33,7 @@
 # -----------------------------------------------------------------------------------------------
 
 # pybm Version
-VERSION = '0.9.1'
+VERSION = '0.9.2'
 
 # Build-Typen
 BUILD_TYPE_DEB = 'build_deb'
@@ -41,7 +41,7 @@ BUILD_TYPE_RPM = 'build_rpm'
 BUILD_TYPE_WHEEL = 'build_wheel'
 BUILD_TYPE_NSIS = 'build_nsis'
 BUILD_TYPE_SIGN = 'build_sign'
-BUILD_TYPE_ZIP = 'build_zip'
+BUILD_TYPE_CUSTOM = 'build_custom'
 
 # Build-Parameter
 PAR_FEATURE_SETS = 'feature-sets'
