@@ -86,7 +86,7 @@ Command line interface:
 - Create Debian install package: ```build_py deb <project> [<feature-set>]```
 - Create RPM install package: ```build_py rpm <project> [<feature-set>]```
 - Create NSIS Windows installer: ```build_py nsis <project>```
-- Create custom ZIP archive: ```build_py custom <project>```
+- Create custom ZIP archive for manual installation: ```build_py custom <project>```
 - Create hashes and signature: ```build_py sign <project>```
 - Change owner of Debian package to root: ```sudo chroot_deb <deb-file>```
 
